@@ -76,6 +76,56 @@ server.get("/api/users/:id", (req, res) => {
 });
 
 // DELETE users/:id - Removes the user with the specified id and returns the deleted user.
+server.delete("/api/users/:id", (req, res) => {
+  const { id } = req.params;
+
+  db.remove(id)
+    .then(user => {
+      if (user) {
+        res.status(200).json({ success: true, user });
+      } else {
+        res.status(404).json({
+          success: false,
+          message: "The user with the specified ID does not exist."
+        });
+      }
+    })
+    .catch(err => {
+      res.status(500).json({
+        success: false,
+        errorMessage: "The user could not be removed"
+      });
+    });
+});
 
 // PUT users/:id - Updates the user with the specified id using data from the request body.
 // Returns the modified document, NOT the original.
+server.put("/api/users/:id", (req, res) => {
+  const { id } = req.params;
+  const updatedUser = req.body;
+
+  if (!updatedUser.name || !updatedUser.bio) {
+    res.status(400).json({
+      success: false,
+      errorMessage: "Please provide name and bio for the user."
+    });
+  } else {
+    db.update(id, updatedUser)
+      .then(user => {
+        if (user) {
+          res.status(200).json({ success: true, user });
+        } else {
+          res.status(404).json({
+            success: false,
+            message: "The user with the specified ID does not exist."
+          });
+        }
+      })
+      .catch(err => {
+        res.status(500).json({
+          success: false,
+          errorMessage: "The user information could not be modified."
+        });
+      });
+  }
+});
