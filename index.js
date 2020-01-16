@@ -125,22 +125,28 @@ server.put("/api/users/:id", (req, res) => {
       errorMessage: "Please provide name and bio for the user."
     });
   } else {
-    db.update(id, updatedUser)
-      .then(user => {
-        if (user) {
-          res.status(200).json({ success: true, user });
-        } else {
-          res.status(404).json({
-            success: false,
-            message: "The user with the specified ID does not exist."
+    db.findById(id).then(response => {
+      if (response) {
+        db.update(id, updatedUser)
+          .then(user => {
+            if (user) {
+              db.findById(id).then(updated => {
+                res.status(200).json({ success: true, updated });
+              });
+            } else {
+              res.status(404).json({
+                success: false,
+                message: "The user with the specified ID does not exist."
+              });
+            }
+          })
+          .catch(err => {
+            res.status(500).json({
+              success: false,
+              errorMessage: "The user information could not be modified."
+            });
           });
-        }
-      })
-      .catch(err => {
-        res.status(500).json({
-          success: false,
-          errorMessage: "The user information could not be modified."
-        });
-      });
+      }
+    });
   }
 });
