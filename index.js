@@ -46,7 +46,6 @@ server.post("/api/users", (req, res) => {
           });
         });
     });
-    // });
   }
 });
 
@@ -91,23 +90,27 @@ server.get("/api/users/:id", (req, res) => {
 server.delete("/api/users/:id", (req, res) => {
   const { id } = req.params;
 
-  db.remove(id)
-    .then(user => {
-      if (user) {
-        res.status(200).json({ success: true, user });
-      } else {
-        res.status(404).json({
-          success: false,
-          message: "The user with the specified ID does not exist."
+  db.findById(id).then(response => {
+    if (response) {
+      db.remove(id)
+        .then(user => {
+          if (user) {
+            res.status(200).json({ success: true, response });
+          }
+        })
+        .catch(err => {
+          res.status(500).json({
+            success: false,
+            errorMessage: "The user could not be removed"
+          });
         });
-      }
-    })
-    .catch(err => {
-      res.status(500).json({
+    } else {
+      res.status(404).json({
         success: false,
-        errorMessage: "The user could not be removed"
+        message: "The user with the specified ID does not exist."
       });
-    });
+    }
+  });
 });
 
 // PUT users/:id - Updates the user with the specified id using data from the request body.
