@@ -11,7 +11,6 @@ function App() {
   const [refresh, setRefresh] = useState(false);
   const [newUser, setNewUser] = useState(intialUser);
   const [isEditing, setIsEditing] = useState(false);
-  const [editUser, setEditUser] = useState();
   const [message, setMessage] = useState("");
 
   useEffect(() => {
@@ -77,32 +76,30 @@ function App() {
     <div className="App">
       <h2>Add new users</h2>
       <form onSubmit={handleSubmit}>
-        <label>
-          {" "}
-          Name
-          <input
-            type="text"
-            name="name"
-            id="name"
-            placeholder="name"
-            value={newUser.name}
-            onChange={handleChange}
-          />
-        </label>
-        <label>
-          {" "}
-          Bio
-          <input
-            type="text"
-            name="bio"
-            id="bio"
-            placeholder="bio"
-            value={newUser.bio}
-            onChange={handleChange}
-          />
-        </label>
-        <button type="submit">Add/Edit</button>
+        <label htmlFor="name"> Name:</label>
+        <input
+          type="text"
+          name="name"
+          id="name"
+          placeholder="name"
+          value={newUser.name}
+          onChange={handleChange}
+        />
+        <label htmlFor="bio"> Bio:</label>
+        <input
+          type="text"
+          name="bio"
+          id="bio"
+          placeholder="bio"
+          value={newUser.bio}
+          onChange={handleChange}
+        />
+
+        {/* <button type="submit">Add/Edit</button>
+        <button onClick={() => clearForm()}>Clear</button> */}
       </form>
+      <button onClick={handleSubmit}>Add/Edit</button>
+      <button onClick={() => clearForm()}>Clear</button>
       {message && <h6>{message}</h6>}
       <h2>Users:</h2>
       <div>

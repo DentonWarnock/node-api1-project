@@ -26,17 +26,27 @@ server.post("/api/users", (req, res) => {
       errorMessage: "Please provide name and bio for the user."
     });
   } else {
-    db.insert(userInfo)
-      .then(user => {
-        res.status(201).json({ success: true, user });
-      })
-      .catch(err => {
-        res.status(500).json({
-          success: false,
-          errorMessage:
-            "There was an error while saving the user to the database"
+    db.insert(userInfo).then(user => {
+      db.findById(user.id)
+        .then(response => {
+          if (response) {
+            res.status(201).json({ success: true, response });
+          } else {
+            res.status(404).json({
+              success: false,
+              message: "The user with the specified ID does not exist."
+            });
+          }
+        })
+        .catch(err => {
+          res.status(500).json({
+            success: false,
+            errorMessage:
+              "There was an error while saving the user to the database"
+          });
         });
-      });
+    });
+    // });
   }
 });
 
